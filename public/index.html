@@ -11,6 +11,23 @@
   </head>
   <body>
     <div id="content"></div>
-    <script type="text/jsx;harmony=true" src="scripts/example.js"></script>
+    <script type="text/jsx">
+
+      var CommentBox = React.createClass({
+        render: function() {
+          return (
+            <div className="commentBox">
+              Hello, world! I am a CommentBox
+            </div>
+          ); // ends return
+        } // ends render function
+      }); //ends createClass
+
+      React.render(
+        <CommentBox />,
+        document.getElementById('content')
+      );
+
+    </script>
   </body>
 </html>
