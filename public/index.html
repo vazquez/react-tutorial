@@ -13,9 +13,11 @@
     <div id="content"></div>
     <script type="text/jsx">
 
+      // Creating a component called CommentBox
       var CommentBox = React.createClass({
         render: function() {
           return (
+            // component has HTML, which you write in the return statement
             <div className="commentBox">
               Hello, world! I am a CommentBox
             </div>
@@ -23,10 +25,20 @@
         } // ends render function
       }); //ends createClass
 
+
+      // React.render() instantiates the root component, starts the framework, and injects the markup into a raw DOM element, provided as the second argument.
       React.render(
         <CommentBox />,
-        document.getElementById('content')
+        document.getElementById('content') //markup is injected here
       );
+
+      // We pass some methods in a JavaScript object to React.createClass() to create a new React component. The most important of these methods is called render which returns a tree of React components that will eventually render to HTML.
+
+      //You do not have to return basic HTML. You can return a tree of components that you (or someone else) built. This is what makes React composable: a key tenet of maintainable frontends.
+
+
+
+
 
     </script>
   </body>
