@@ -16,11 +16,6 @@
 
     <script type="text/jsx">
 
-      var data = [
-        { author: "Ray Eames", text: "My favourite chair is the Eames Lounge." },
-        { author: "Charles Eames", text: "I agree! It's my favourite too." }
-      ];
-
       // Creating a component for CommentList
       var CommentList = React.createClass({
         render: function() {
@@ -42,12 +37,24 @@
 
       // Creating component for CommentForm
       var CommentForm = React.createClass({
+        handleSubmit: function(e){
+          e.preventDefault();
+          var author = this.refs.author.getDOMNode().value.trim();
+          var text = this.refs.text.getDOMNode().value.trim();
+          if(!text || !author){
+            console.log("No data");
+            return;
+          }
+          // TODO: send request to server
+          this.refs.author.getDOMNode().value = '';
+          this.refs.text.getDOMNode().value = '';
+        },
         render: function() {
           return (
             // component has HTML, which you write in the return statement
-            <form className="commentForm">
-              <input type="text" placeholder="Your name" />
-              <input type="text" placeholder="Say something"/>
+            <form className="commentForm" onSubmit={this.handleSubmit}>
+              <input type="text" placeholder="Your name" ref="author" />
+              <input type="text" placeholder="Say something" ref="text"/>
               <input type="submit" value="Post Comment" />
             </form>
           );
@@ -56,17 +63,37 @@
 
       // Creating a component called CommentBox
       var CommentBox = React.createClass({
-        render: function() {
-          return (
-            // component has HTML, which you write in the return statement
-            // We are importing other components, CommenstList and CommentForm
-            <div className="commentBox">
-              <h1>Comments</h1>
-              <CommentList data={this.props.data} />
-              <CommentForm />
-            </div>
-          ); // ends return
-        } // ends render function
+      loadCommentsFromServer: function() {
+      $.ajax({
+        url: this.props.url,
+        dataType: 'json',
+        success: function(data) {
+          this.setState({data: data});
+        }.bind(this),
+        error: function(xhr, status, err) {
+          console.error(this.props.url, status, err.toString());
+        }.bind(this)
+        });
+      },
+      handleCommentSubmit: function(comment) {
+        // TODOL submit to the server and refresh the list
+      },
+      getInitialState: function() {
+        return {data: []};
+      },
+      componentDidMount: function() {
+        this.loadCommentsFromServer();
+        setInterval(this.loadCommentsFromServer, this.props.pollInterval);
+      },
+      render: function() {
+        return (
+          <div className="commentBox">
+            <h1>Comments</h1>
+            <CommentList data={this.state.data} />
+            <CommentForm />
+          </div>
+        );// ends return
+       } // ends render function
       }); //ends createClass
 
       // Creating a component called Comment. Using 'props' we will be able to
@@ -91,7 +118,7 @@
 
       // React.render() instantiates the root component, starts the framework, and injects the markup into a raw DOM element, provided as the second argument.
       React.render(
-        <CommentBox url="comments.json" />,
+        <CommentBox url="comments.json" pollInterval={2000} />,
         document.getElementById('content') //markup is injected here
       );
 

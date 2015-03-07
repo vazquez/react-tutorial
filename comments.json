@@ -1,6 +1,14 @@
 [
     {
         "author": "Pete Hunt",
-        "text": "Hey there!"
+        "text": "Hey there! Just wanted to say my favourite chair is the **Eames Lounge Chair**."
+    },
+    {
+        "author": "Ray Eames",
+        "text": "My favourite chair is the Eames Lounge."
+    },
+    {
+        "author": "Charles Eames",
+        "text": "I *totally* agree. It's my favourite too."
     }
 ]
