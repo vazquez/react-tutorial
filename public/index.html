@@ -38,6 +38,7 @@
       // Creating component for CommentForm
       var CommentForm = React.createClass({
         handleSubmit: function(e){
+          // Let's make the form interactive. When the user submits the form, we should clear it, submit a request to the server, and refresh the list of comments. To start, let's listen for the form's submit event and clear it.
           e.preventDefault();
           var author = this.refs.author.getDOMNode().value.trim();
           var text = this.refs.text.getDOMNode().value.trim();
@@ -45,7 +46,7 @@
             console.log("No data");
             return;
           }
-          // TODO: send request to server
+          this.props.onCommentSubmit({ author: author, text: text});
           this.refs.author.getDOMNode().value = '';
           this.refs.text.getDOMNode().value = '';
         },
@@ -75,8 +76,20 @@
         }.bind(this)
         });
       },
+      //submit to the server and refresh the list:
       handleCommentSubmit: function(comment) {
-        // TODOL submit to the server and refresh the list
+        $.ajax({
+          url: this.props.url,
+          dataType: 'json',
+          type: 'POST',
+          data: comment,
+          success: function(data) {
+            this.setState({data: data});
+          }.bind(this),
+          error: function(xhr, status, err) {
+            console.error(this.props.url, status, err.toString());
+          }.bind(this)
+        });
       },
       getInitialState: function() {
         return {data: []};
@@ -90,7 +103,7 @@
           <div className="commentBox">
             <h1>Comments</h1>
             <CommentList data={this.state.data} />
-            <CommentForm />
+            <CommentForm onCommentSubmit={this.handleCommentSubmit}/>
           </div>
         );// ends return
        } // ends render function
